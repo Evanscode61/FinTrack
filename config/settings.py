@@ -137,6 +137,10 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
+SIMPLE_JWT = {      #Simple_Jwt assumes id by default, configured uuid to match the user table pk(uuid).
+    'USER_ID_FIELD': 'uuid',
+    'USER_ID_CLAIM': 'user_id',
+}
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
