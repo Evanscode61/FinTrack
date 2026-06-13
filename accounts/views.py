@@ -1,3 +1,4 @@
+from _pyrepl.commands import refresh
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.exceptions import APIException
@@ -29,3 +30,28 @@ class RegisterView(APIView):
                 }
             }
         )
+class LoginView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        try:
+            user, refresh = AuthService.login(request.data)
+        except APIException:
+            raise
+        except Exception:
+            raise APIException('Login failed. Please try again.')
+
+        return APIResponse.success(
+            message='Login successful',
+            data={
+                'tokens': {
+                    'access' : str(refresh.access_token),
+                    'refresh': str(refresh),
+                }
+            }
+        )
+
+
+
+
+

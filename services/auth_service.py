@@ -1,6 +1,6 @@
 
 
-from accounts.serializers import RegisterSerializer
+from accounts.serializers import RegisterSerializer, LoginSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.exceptions import ValidationError
 from django.db import IntegrityError
@@ -23,3 +23,17 @@ class AuthService:
         except Exception as e:
             traceback.print_exc()
             raise
+
+    @staticmethod
+    def login(data):
+        import traceback
+        try:
+            serializer = LoginSerializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            user = serializer.validated_data['user']
+            refresh = RefreshToken.for_user(user)
+            return user, refresh
+        except Exception as e:
+            traceback.print_exc()
+            raise
+
