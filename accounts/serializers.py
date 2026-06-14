@@ -1,8 +1,11 @@
 
 import re
-
+import token
+from tokenize import TokenError
 from django.contrib.auth import authenticate
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 from .models import User
 
 
@@ -52,6 +55,19 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError('Account is disabled.')
         data['user'] = user
         return data
+
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+    def validate(self, data):
+        try:
+            token = RefreshToken(data['refresh'])
+            token.blacklist()
+        except TokenError:
+            raise serializers.ValidationError('refresh token has already been invalidated.')
+        return data
+
+
+
 
 
 

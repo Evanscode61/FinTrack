@@ -1,5 +1,5 @@
-from _pyrepl.commands import refresh
-from rest_framework.permissions import AllowAny
+
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.exceptions import APIException
 from services.auth_service import AuthService
@@ -50,6 +50,21 @@ class LoginView(APIView):
                 }
             }
         )
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        try:
+            AuthService.logout(request.data)
+        except APIException:
+            raise
+        except Exception:
+            raise APIException('Logout failed. Please try again.')
+        return APIResponse.success(
+            message='Logout successful',
+        )
+
+
 
 
 
